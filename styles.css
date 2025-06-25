@@ -1,0 +1,137 @@
+
+* {
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
+
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #1a202c; /* Fundo escuro */
+  color: #e2e8f0; /* Cor do texto claro */
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente os itens */
+  align-items: center; /* Centraliza verticalmente os itens */
+  min-height: 100vh; /* Garante que o corpo ocupa a altura total da viewport */
+  margin: 0;
+  overflow: hidden; /* Oculta o scroll para evitar barras indesejadas */
+}
+
+/* Contêiner principal da cena espacial */
+.space {
+  position: relative;
+  width: 200px; /* Largura fixa de 200px */
+  height: 200px; /* Altura fixa de 200px */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%; /* Torna o contêiner circular */
+  border: 1px dashed rgba(255, 255, 255, 0.1); /* Borda sutil */
+}
+
+/* O planeta Terra no centro */
+.earth {
+  position: absolute;
+  width: 100px; /* Tamanho da Terra ajustado para 100px */
+  height: 100px; /* Tamanho da Terra ajustado para 100px */
+  background-color: #2a69b6; /* Cor da Terra (azul) */
+  border-radius: 50%; /* Torna a Terra circular */
+  box-shadow: 0 0 30px #2a69b6, 0 0 50px rgba(42, 105, 182, 0.5); /* Efeito de brilho */
+  z-index: 2; /* Garante que a Terra esteja em uma camada superior */
+  top: 50%; /* Centraliza a Terra verticalmente dentro de .space */
+  left: 50%; /* Centraliza a Terra horizontalmente dentro de .space */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Ajusta para centralizar o elemento a partir do seu próprio centro */
+}
+
+/* O contêiner da órbita para a lua e o satélite */
+.orbit {
+  position: absolute;
+  width: 200px; /* Define o diâmetro da órbita para 200px */
+  height: 200px; /* Altura para 200px */
+  border-radius: 50%; /* Torna o caminho da órbita circular */
+  top: 50%; /* Centraliza a órbita verticalmente em relação ao .space */
+  left: 50%; /* Centraliza a órbita horizontalmente em relação ao .space */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Ajusta para centralizar o elemento a partir do seu próprio centro */
+  display: flex; /* Permite posicionar os elementos internos com flexbox */
+  justify-content: center; /* Centraliza horizontalmente os filhos */
+  align-items: center; /* Centraliza verticalmente os filhos */
+  animation: orbit 5s linear infinite; /* AJUSTADO: Animação 'orbit' com 5s, linear, infinita */
+  transform-origin: 50% 50%; /* Ponto de origem da rotação do .orbit é o seu próprio centro (que estará no centro da Terra) */
+}
+
+/* O satélite */
+.satellite {
+  position: absolute;
+  width: 15px; /* Tamanho do satélite */
+  height: 15px;
+  background-color: #a0aec0; /* Cor do satélite (cinza médio) */
+  border-radius: 50%; /* Torna o satélite circular */
+  box-shadow: 0 0 8px #a0aec0; /* Efeito de brilho */
+  z-index: 3; /* O satélite estará acima */
+  top: 50%; /* Centraliza o satélite dentro de .orbit */
+  left: 50%; /* Centraliza o satélite dentro de .orbit */
+  /* Posiciona o satélite em uma distância específica do centro do .orbit e o anima */
+  transform: translate(-50%, -50%) var(--orbital-offset); /* Usa a variável para o offset */
+  animation: orbitAroundParent 10s linear infinite; /* Animação de órbita do satélite */
+  animation-delay: -5s; /* Inicia em um ponto diferente da Lua */
+  transform-origin: 50% 50%; /* O satélite orbita seu próprio centro antes da translação */
+  --orbital-offset: translateX(
+    70px
+  ); /* Raio de órbita do satélite (horizontal) */
+}
+
+/* A lua */
+.moon {
+  position: absolute;
+  width: 30px; /* Tamanho da lua ajustado para 30px */
+  height: 30px; /* Tamanho da lua ajustado para 30px */
+  background-color: #cbd5e0; /* Cor da lua (cinza claro) */
+  border-radius: 50%; /* Torna a lua circular */
+  box-shadow: 0 0 15px #cbd5e0; /* Efeito de brilho */
+  z-index: 4; /* A lua estará acima de tudo */
+  top: 50%; /* Centraliza a lua dentro de .orbit (para seu próprio ponto de origem) */
+  left: 50%; /* Centraliza a lua dentro de .orbit (para seu próprio ponto de origem) */
+  /* Posiciona a lua em uma distância específica do centro do .orbit e a anima */
+  transform: translate(-50%, -50%) var(--orbital-offset); /* Usa a variável para o offset */
+  animation: orbitAroundParent 15s linear infinite; /* Animação de órbita da lua */
+  transform-origin: 50% 50%; /* A lua orbita seu próprio centro antes da translação */
+  /* Ajustado: Deslocamento vertical para o topo e deslocamento horizontal para a esquerda */
+  --orbital-offset: translateY(-60px) translateX(-15px);
+}
+
+/* AJUSTADO: Keyframes para a animação de órbita do .orbit */
+@keyframes orbit {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* Keyframes para a animação de órbita do satélite e da lua ao redor de seu elemento pai (.orbit) */
+/* Agora, a variável --orbital-offset define o deslocamento inicial (X ou Y) */
+@keyframes orbitAroundParent {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg) var(--orbital-offset)
+      rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg) var(--orbital-offset)
+      rotate(-360deg);
+  }
+}
+
+/* Para garantir a centralização e as órbitas corretas:
+   - `translate(-50%, -50%)` é usado para centralizar os elementos a partir de seu próprio centro.
+   - `--orbital-offset` (que pode ser `translateX()` ou `translateY()`) é usado para posicionar o elemento a uma certa distância do seu ponto de origem da órbita.
+   - `transform-origin: 50% 50%` é crucial para que a rotação ocorra em torno do centro do elemento pai (.orbit).
+   - A animação `rotate(0deg) var(--orbital-offset) rotate(-360deg)` simula uma órbita onde o objeto em si não gira, apenas sua posição.
+*/
